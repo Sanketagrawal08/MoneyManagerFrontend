@@ -66,7 +66,7 @@ const Category = () => {
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mb-5">
         <BackButton />
         <h2 className="text-3xl font-semibold text-gray-800 text-center">All Categories</h2>
         <button
