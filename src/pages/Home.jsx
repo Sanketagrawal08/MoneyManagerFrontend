@@ -12,13 +12,16 @@ import {
   User,
   Mail,
   LogIn,
+  Trash2,
+  XCircle,
+  AlertTriangle,
 } from "lucide-react";
 import Navbar from "../pages/Navbar";
-import  AppContext  from "../context/AppContext"; // ✅ make sure AppContext is exported with curly braces
+import AppContext from "../context/AppContext";
 
 const Home = () => {
   const navigate = useNavigate();
-  const { user } = useContext(AppContext); // ✅ Accessing user from global context
+  const { user } = useContext(AppContext);
 
   const [dashboard, setDashboard] = useState({
     totalIncome: 0,
@@ -28,10 +31,11 @@ const Home = () => {
     latest5expenses: [],
   });
 
+  const [showResetModal, setShowResetModal] = useState(false);
+
   const getDataHandler = async () => {
     try {
       const res = await axiosConfig.get(API_ENDPOINTS.DASHBOARD_DATA);
-      console.log(res)
       if (res.status === 200) setDashboard(res.data);
     } catch (error) {
       console.log("Error fetching dashboard data:", error);
@@ -41,6 +45,21 @@ const Home = () => {
   useEffect(() => {
     getDataHandler();
   }, []);
+
+  //  handle reset transactions
+  const resetHandler = async () => {
+    try {
+      const res = await axiosConfig.delete(API_ENDPOINTS.RESET_TRANSACTIONS);
+      if (res.status === 200) {
+        toast.success("All transactions have been reset!");
+        setShowResetModal(false);
+        getDataHandler();
+      }
+    } catch (error) {
+      console.log("Error resetting transactions:", error);
+      toast.error("Failed to reset transactions");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4 md:p-8">
@@ -55,7 +74,7 @@ const Home = () => {
           </div>
 
           {/* ✅ User Info / Login */}
-          <div className="mt-4 md:mt-0 bg-white p-4 rounded-xl shadow flex items-center gap-4 border border-gray-200">
+          <div className="mt-4 md:mt-0 bg-white p-4 rounded-xl shadow flex flex-col gap-3 border border-gray-200">
             {user ? (
               <>
                 <div className="flex items-center gap-3">
@@ -72,11 +91,20 @@ const Home = () => {
                     </p>
                   </div>
                 </div>
+
+                {/* ✅ Reset Transactions Button */}
+                <button
+                  onClick={() => setShowResetModal(true)}
+                  className="flex items-center gap-2 justify-center bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition font-medium"
+                >
+                  <Trash2 className="w-5 h-5" />
+                  Reset Transactions
+                </button>
               </>
             ) : (
               <button
-              onClick={() => navigate("/login")}
-              className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 transition"
+                onClick={() => navigate("/login")}
+                className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 transition"
               >
                 <LogIn className="w-5 h-5" />
                 Login
@@ -86,7 +114,6 @@ const Home = () => {
         </div>
 
         {/* ✅ Navbar */}
-            
         <Navbar />
 
         {/* Summary Cards (Income + Expense Only) */}
@@ -97,7 +124,9 @@ const Home = () => {
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <TrendingUp className="w-5 h-5" />
-                  <h3 className="text-lg font-medium opacity-90">Total Income</h3>
+                  <h3 className="text-lg font-medium opacity-90">
+                    Total Income
+                  </h3>
                 </div>
                 <p className="text-3xl md:text-4xl font-bold">
                   ₹{dashboard.totalIncome.toLocaleString()}
@@ -115,7 +144,9 @@ const Home = () => {
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <TrendingDown className="w-5 h-5" />
-                  <h3 className="text-lg font-medium opacity-90">Total Expense</h3>
+                  <h3 className="text-lg font-medium opacity-90">
+                    Total Expense
+                  </h3>
                 </div>
                 <p className="text-3xl md:text-4xl font-bold">
                   ₹{dashboard.totalExpenses.toLocaleString()}
@@ -184,10 +215,14 @@ const Home = () => {
           <div className="flex-1 bg-white rounded-2xl shadow-lg p-6">
             <div className="flex items-center gap-2 mb-4">
               <PlusCircle className="w-6 h-6 text-green-600" />
-              <h3 className="text-xl font-bold text-gray-800">Latest 5 Incomes</h3>
+              <h3 className="text-xl font-bold text-gray-800">
+                Latest 5 Incomes
+              </h3>
             </div>
             {dashboard.latest5Income.length === 0 ? (
-              <p className="text-gray-500 text-center py-8">No incomes available.</p>
+              <p className="text-gray-500 text-center py-8">
+                No incomes available.
+              </p>
             ) : (
               <div className="space-y-3">
                 {dashboard.latest5Income.map((inc, i) => (
@@ -251,6 +286,35 @@ const Home = () => {
           </div>
         </div>
       </div>
+
+      {/*  Reset  Modal */}
+      {showResetModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-2xl shadow-xl max-w-sm text-center">
+            <AlertTriangle className="w-12 h-12 text-red-600 mx-auto mb-3" />
+            <h2 className="text-xl font-semibold text-gray-800 mb-2">
+              Are you sure?
+            </h2>
+            <p className="text-gray-600 mb-6">
+              This will permanently delete all your income and expense records.
+            </p>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => setShowResetModal(false)}
+                className="flex items-center gap-1 px-4 py-2 rounded-md bg-gray-200 hover:bg-gray-300 text-gray-800"
+              >
+                <XCircle className="w-4 h-4" /> Cancel
+              </button>
+              <button
+                onClick={resetHandler}
+                className="flex items-center gap-1 px-4 py-2 rounded-md bg-red-600 hover:bg-red-700 text-white"
+              >
+                <Trash2 className="w-4 h-4" /> Confirm Reset
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

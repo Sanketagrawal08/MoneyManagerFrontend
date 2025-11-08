@@ -13,5 +13,6 @@ export const API_ENDPOINTS = {
     ADD_EXPENSE:"/expense/add",
     GET_ALL_EXPENSES:"/expense/getExpensesForCurrentMonth",
     FILTER:"/filter",
-    DASHBOARD_DATA:"/dashboard/get-data"
+    DASHBOARD_DATA:"/dashboard/get-data",
+    RESET_TRANSACTIONS:"/reset"
 }
