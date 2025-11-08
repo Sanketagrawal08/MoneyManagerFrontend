@@ -17,7 +17,7 @@ const AddCategoryForm = ({ onAddCategory }) => {
   };
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-5 w-80">
       {/* Emoji Picker */}
       <EmojiPickerPopup
         icon={category.icon}

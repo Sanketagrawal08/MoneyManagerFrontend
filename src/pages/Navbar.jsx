@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { List, PlusCircle, MinusCircle, Filter } from "lucide-react";
+import { List, PlusCircle, MinusCircle, Filter, LogOutIcon } from "lucide-react";
 import AppContext from "../context/AppContext";
 
 const Navbar = () => {
@@ -8,6 +8,12 @@ const Navbar = () => {
 
   const {user} = useContext(AppContext);
   console.log(user)
+
+
+  const logout = async () => {
+      localStorage.clear();
+      navigate("/login")
+  }
 
   return (
     <nav className="flex flex-wrap gap-3 mb-8 bg-white p-4 rounded-2xl shadow-md justify-center md:justify-start">
@@ -42,6 +48,7 @@ const Navbar = () => {
         <Filter className="w-5 h-5" />
         Filter Expenses
       </button>
+   
     </nav>
   );
 };

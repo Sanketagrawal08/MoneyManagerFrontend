@@ -1,43 +1,55 @@
-import React, { useCallback, useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_ENDPOINTS } from "../util/apiEndpoints";
 import axiosConfig from "../util/axiosConfig";
 import AppContext from "../context/AppContext";
 import toast from "react-hot-toast";
+
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [data, setData] = useState({
-    email: "",
-    password: "",
-  });
-
+  const [data, setData] = useState({ email: "", password: "" });
   const navigate = useNavigate();
-  const {user, setUser} = useContext(AppContext);
+  const { setUser } = useContext(AppContext); // ✅ user not needed here, only setUser
+
+  // handle input change
   const changeHandler = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
 
+  // handle form submit
   const submitHandler = async (e) => {
     e.preventDefault();
 
     try {
-      // ✅ Call your backend login API
+      // ✅ Call backend login API
       const response = await axiosConfig.post(API_ENDPOINTS.LOGIN, data);
-
-        const {token , user} = response.data;
-        if (token) {
-            localStorage.setItem("token" , token);
-            setUser(user);
-            navigate("/dashboard");
-        }
+      console.log("Login response:", response.data);
 
       if (response.status === 200) {
-        toast.success("Login successful!");
+        const { token, user } = response.data;
+
+        if (token && user) {
+          // ✅ Save token + user to localStorage for persistence
+          localStorage.setItem("token", token);
+          localStorage.setItem("user", JSON.stringify(user));
+
+          // ✅ Update global context
+          setUser(user);
+
+          toast.success("Login successful!");
+          navigate("/dashboard");
+        } else {
+          toast.error("Invalid login response from server");
+        }
       }
     } catch (error) {
       console.error("Login failed:", error.response?.data || error.message);
-      toast.error("Error: " + (error.response?.data?.message || "Invalid credentials"));
-    } 
+      toast.error(
+        error.response?.data?.message
+          ? `Error: ${error.response.data.message}`
+          : "Invalid credentials"
+      );
+    }
   };
 
   return (
@@ -50,6 +62,7 @@ const Login = () => {
           Login to Your Account
         </h2>
 
+        {/* Email */}
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-medium mb-2">
             Email
@@ -65,6 +78,7 @@ const Login = () => {
           />
         </div>
 
+        {/* Password */}
         <div className="mb-6 relative">
           <label className="block text-gray-700 text-sm font-medium mb-2">
             Password
@@ -87,6 +101,7 @@ const Login = () => {
           </button>
         </div>
 
+        {/* Login Button */}
         <button
           type="submit"
           className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
@@ -94,6 +109,7 @@ const Login = () => {
           Login
         </button>
 
+        {/* Signup Redirect */}
         <p className="text-sm text-center text-gray-600 mt-4">
           Don’t have an account?{" "}
           <span

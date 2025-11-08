@@ -1,3 +1,4 @@
+// src/App.jsx
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Home from "./pages/Home";
@@ -17,13 +18,46 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Root />} />
-          <Route path="/dashboard" element={<ProtectedRoute> <Home /> </ProtectedRoute>} />
-          <Route path="/income" element={ <ProtectedRoute>
-            <Income/>
-          </ProtectedRoute> } />
-          <Route path="/expense" element={ <ProtectedRoute>  <Expense /> </ProtectedRoute>} />
-          <Route path="/category" element={<ProtectedRoute> <Category /> </ProtectedRoute>} />
-          <Route path="/filter" element={<ProtectedRoute><Filter /></ProtectedRoute>} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/income"
+            element={
+              <ProtectedRoute>
+                <Income />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/expense"
+            element={
+              <ProtectedRoute>
+                <Expense />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/category"
+            element={
+              <ProtectedRoute>
+                <Category />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/filter"
+            element={
+              <ProtectedRoute>
+                <Filter />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
         </Routes>
@@ -35,10 +69,5 @@ export default function App() {
 const Root = () => {
   const token = localStorage.getItem("token");
   const isAuthenticated = !!token;
-
-  if (isAuthenticated) {
-    return <Navigate to="/dashboard" />;
-  } else {
-    return <Navigate to="/login" />;
-  }
+  return <Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />;
 };

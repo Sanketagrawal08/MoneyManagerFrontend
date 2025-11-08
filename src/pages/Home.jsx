@@ -31,10 +31,10 @@ const Home = () => {
   const getDataHandler = async () => {
     try {
       const res = await axiosConfig.get(API_ENDPOINTS.DASHBOARD_DATA);
+      console.log(res)
       if (res.status === 200) setDashboard(res.data);
     } catch (error) {
       console.log("Error fetching dashboard data:", error);
-      toast.error("Failed to load dashboard data");
     }
   };
 
@@ -75,8 +75,8 @@ const Home = () => {
               </>
             ) : (
               <button
-                onClick={() => navigate("/login")}
-                className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 transition"
+              onClick={() => navigate("/login")}
+              className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 transition"
               >
                 <LogIn className="w-5 h-5" />
                 Login
@@ -86,6 +86,7 @@ const Home = () => {
         </div>
 
         {/* ✅ Navbar */}
+            
         <Navbar />
 
         {/* Summary Cards (Income + Expense Only) */}

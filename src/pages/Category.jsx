@@ -6,6 +6,7 @@ import { API_ENDPOINTS } from "../util/apiEndpoints";
 import Modal from "../components/Modal";
 import AddCategoryForm from "../components/AddCategoryForm";
 import toast from "react-hot-toast";
+import BackButton from "./BackButton";
 
 const Category = () => {
   const [categoryData, setCategoryData] = useState([]);
@@ -66,7 +67,8 @@ const Category = () => {
     <div className="p-6 bg-gray-50 min-h-screen">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold text-gray-800">All Categories</h2>
+        <BackButton />
+        <h2 className="text-3xl font-semibold text-gray-800 text-center">All Categories</h2>
         <button
           onClick={() => setOpenAddCategoryModal(true)}
           className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md shadow-sm transition-all"

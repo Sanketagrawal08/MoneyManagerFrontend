@@ -176,7 +176,7 @@ const Income = () => {
                   <div className="flex items-center gap-4 flex-1">
                     {/* Icon */}
                     <div className="bg-gradient-to-br from-green-100 to-emerald-100 p-3 rounded-xl flex-shrink-0">
-                      <span className="text-2xl">{inc.icon || '💰'}</span>
+                      <img src={inc.icon} alt="" />
                     </div>
 
                     {/* Details */}
